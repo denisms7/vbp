@@ -121,7 +121,7 @@ df = carregar_dados()
 
 # Configuração da página
 st.set_page_config(
-    page_title="Dashboard - Modelo",
+    page_title="PMCS - VBP",
     page_icon="📊",
     layout="wide",
 )
@@ -389,25 +389,6 @@ top_10_por_safra_vbp = (
 
 
 with col12:
-    fig_area = px.bar(
-        top_10_por_safra.sort_values(by=["Safra_ordem"]),
-        x="Safra_ordem",
-        y="Área (ha)",
-        color="Cultura",
-        barmode="group",
-        title="Top 5 Culturas por Área (ha) em cada Safra",
-    )
-
-    fig_area.update_layout(
-        xaxis_title="Safra",
-        yaxis_title="Área (ha)",
-        legend_title_text="Cultura",
-    )
-
-    st.plotly_chart(fig_area, use_container_width=True)
-
-
-with col13:
     fig_vbp = px.bar(
         top_10_por_safra_vbp.sort_values(by=["Safra_ordem"]),
         x="Safra_ordem",
@@ -425,6 +406,24 @@ with col13:
 
     st.plotly_chart(fig_vbp, use_container_width=True)
 
+
+with col13:
+    fig_area = px.bar(
+        top_10_por_safra.sort_values(by=["Safra_ordem"]),
+        x="Safra_ordem",
+        y="Área (ha)",
+        color="Cultura",
+        barmode="group",
+        title="Top 5 Culturas por Área (ha) em cada Safra",
+    )
+
+    fig_area.update_layout(
+        xaxis_title="Safra",
+        yaxis_title="Área (ha)",
+        legend_title_text="Cultura",
+    )
+
+    st.plotly_chart(fig_area, use_container_width=True)
 
 st.markdown(
     '📊 Fonte dos dados: <a href="https://www.agricultura.pr.gov.br/vbp" target="_blank">'
