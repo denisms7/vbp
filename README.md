@@ -27,11 +27,14 @@ https://www.agricultura.pr.gov.br/vbp
 
 - Python
 
+- Docker
+
 - Streamlit
 
 - Pandas
 
 - Plotly
+
 
 ## 🎯 Objetivo
 
