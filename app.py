@@ -69,23 +69,71 @@ geral(df_filtrado)
 # CULTURA
 # ===========================================================
 st.subheader("Produção por Cultura", divider=True)
-cultura_selecionadas = st.sidebar.selectbox("Selecione a Cultura:", options=sorted(culturas))
 
-cultura_filtro = df_filtrado[df_filtrado["Cultura"] == cultura_selecionadas]
-cultura_total = (cultura_filtro.groupby(["Município", "Safra", "Safra_ordem", "Cultura", "Unidade"], as_index=False).agg(
-    {
-        "VBP": "sum",
-        "Área (ha)": "sum",
-        "Produção": "sum",
-        "Abate / Comercialização": "sum",
-    })
+cultura_selecionadas = st.sidebar.selectbox(
+    "Selecione a Cultura:",
+    options=sorted(culturas),
 )
 
-# Filtra a linha da cultura selecionada
-linha = df[df["Cultura"] == cultura_selecionadas]
-medida = linha["Unidade"].iloc[0] if not linha.empty else "N/A"
+# Base completa
+df_base = df_filtrado.copy()
+
+# Filtra apenas a cultura selecionada
+df_cultura = df_base[df_base["Cultura"] == cultura_selecionadas]
+
+# Agrega a cultura por município e safra
+cultura_agregada = (
+    df_cultura.groupby(
+        ["Município", "Safra", "Safra_ordem", "Unidade"],
+        as_index=False,
+    )
+    .agg(
+        {
+            "VBP": "sum",
+            "Área (ha)": "sum",
+            "Produção": "sum",
+            "Abate / Comercialização": "sum",
+        }
+    )
+)
+
+# Base com TODAS as combinações de município e safra
+base_completa = (
+    df_base[["Município", "Safra", "Safra_ordem"]]
+    .drop_duplicates()
+)
+
+# Junta base completa com a cultura agregada
+cultura_total = base_completa.merge(
+    cultura_agregada,
+    on=["Município", "Safra", "Safra_ordem"],
+    how="left",
+)
+
+# Preenche valores ausentes com zero
+colunas_zero = [
+    "VBP",
+    "Área (ha)",
+    "Produção",
+    "Abate / Comercialização",
+]
+
+cultura_total[colunas_zero] = cultura_total[colunas_zero].fillna(0)
+
+# Preenche informações fixas
+cultura_total["Cultura"] = cultura_selecionadas
+
+medida = (
+    df_cultura["Unidade"].iloc[0]
+    if not df_cultura.empty
+    else "N/A"
+)
+
+cultura_total["Unidade"] = medida
+
 st.text(f"Cultura: {cultura_selecionadas}, Medida: {medida}")
 
+# Envia para o componente/gráfico
 cultura(cultura_total, cultura_selecionadas)
 
 
