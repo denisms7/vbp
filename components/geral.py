@@ -73,13 +73,12 @@ def geral(df: pd.DataFrame):
             xaxis_title="Safra",
             yaxis_title="Total de Culturas",
             legend_title_text="Município",
-            hovermode="x unified",
         )
 
         st.plotly_chart(fig, use_container_width=True)
 
     with col03:
-        fig = px.area(
+        fig = px.line(
             vbp_total,
             x="Safra",
             y="Área (ha)",
