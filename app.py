@@ -150,6 +150,7 @@ with col03:
             x="Safra",
             y="Produção",
             color="Município",
+            markers=True,
             title=f"Produção - {cultura_selecionadas}",
             custom_data=["Município", "Unidade"],
         )
