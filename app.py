@@ -94,7 +94,7 @@ with col01:
             y="VBP",
             color="Município",
             barmode="group",
-            title="VBP Total por Safra",
+            title=f"VBP - {cultura_selecionadas}",
             custom_data=["Município"],
         )
 
@@ -123,7 +123,7 @@ with col02:
             x="Safra",
             y=coluna_y,
             color="Município",
-            title=f"{coluna_y} por Safra",
+            title=f"{coluna_y} - {cultura_selecionadas}",
             markers=True,
             custom_data=["Município"],
         )
