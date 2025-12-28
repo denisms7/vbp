@@ -75,6 +75,10 @@ def padronizar_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def carregar_dados() -> pd.DataFrame:
+    df_2012 = pd.read_excel("data/vbp_2012.xlsx")
+    df_2013 = pd.read_excel("data/vbp_2013.xlsx")
+    df_2014 = pd.read_excel("data/vbp_2014.xlsx")
+
     df_2015 = pd.read_excel("data/vbp_2015.xlsx")
     df_2016 = pd.read_excel("data/vbp_2016.xlsx")
     df_2017 = pd.read_excel("data/vbp_2017.xlsx")
@@ -88,6 +92,9 @@ def carregar_dados() -> pd.DataFrame:
     df_2024 = pd.read_excel("data/vbp_2024.xlsx")
 
     dfs = [
+        # df_2012,
+        df_2013,
+        df_2014,
         df_2015,
         df_2016,
         df_2017,
@@ -145,10 +152,19 @@ def carregar_dados() -> pd.DataFrame:
     # Remover excesso de espaços
     df["Cultura"] = (df["Cultura"].str.strip().str.replace(r"\s+", " ", regex=True))
 
-    # Correcao nomes errados
+    # Correcao Nomes
+    df["Município"] = df["Município"].replace("RANCHO ALEGRE DO OESTE", "RANCHO ALEGRE D'OESTE")
+    df["Município"] = df["Município"].replace("SANTA CRUZ DO MONTE CASTELO", "SANTA CRUZ DE MONTE CASTELO")
+    df["Município"] = df["Município"].replace("SANTA IZABEL DO IVAI", "SANTA ISABEL DO IVAI")
+    df["Município"] = df["Município"].replace("SANTA TEREZINHA DO ITAIPU", "SANTA TEREZINHA DE ITAIPU")
+    df["Município"] = df["Município"].replace("SAO JORGE DO OESTE", "SAO JORGE D'OESTE")
+    df["Município"] = df["Município"].replace("SAUDADES DO IGUACU", "SAUDADE DO IGUACU")
+
     df["Cultura"] = df["Cultura"].replace("ALHO PORO", "ALHO PORRO")
     df["Cultura"] = df["Cultura"].replace("CRISANTEMO VASO", "CRISANTEMO (VASO)")
     df["Cultura"] = df["Cultura"].replace("MANDIOCA CONSUMO HUMANO", "MANDIOCA CONSUMO (HUMANO)")
+    df["Cultura"] = df["Cultura"].replace("CARANGUEIJO", "CARANGUEJO")
+    df["Cultura"] = df["Cultura"].replace("MANDIOCA INDUSTRIA", "MANDIOCA INDUSTRIA/CONSUMO ANIMAL")
 
     df = df.drop(columns=["NR", "NR Seab"])
 

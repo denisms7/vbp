@@ -3,7 +3,6 @@ import plotly.express as px
 from components.data import carregar_dados, encontrar_cidade_mais_proxima
 from components.estado import estado
 from components.geral import geral
-from components.exportar import exportacao
 
 
 # Configuração da página
@@ -30,8 +29,11 @@ st.title("VBP Valor Bruto da Produção")
 cidade = (df["Município"].dropna().astype(str).sort_values().unique())
 cultura = (df["Cultura"].dropna().astype(str).sort_values().unique())
 
+
+
+
 cidade_default = encontrar_cidade_mais_proxima(cidade, "CENTENARIO DO SUL")
-cidades_selecionadas = st.multiselect("Selecione o(s) Município(s):", options=sorted(cidade), default=cidade_default)
+cidades_selecionadas = st.sidebar.multiselect("Selecione o(s) Município(s):", options=sorted(cidade), default=cidade_default)
 
 if cidades_selecionadas:
     df_filtrado = df[df["Município"].isin(cidades_selecionadas)]
@@ -44,7 +46,7 @@ geral(df_filtrado)
 
 st.subheader("Produção por Cultura", divider=True)
 
-cultura_selecionadas = st.selectbox("Selecione a Cultura:", options=sorted(cultura))
+cultura_selecionadas = st.sidebar.selectbox("Selecione a Cultura:", options=sorted(cultura))
 
 cultura_filtro = df_filtrado[df_filtrado["Cultura"] == cultura_selecionadas]
 
@@ -182,18 +184,8 @@ with col03:
 
 estado(df)
 
-num_linhas = len(df)
-num_safras = len(df["Safra"].unique())
-
-st.markdown(
-    f'Fonte dos dados: <a href="https://www.agricultura.pr.gov.br/vbp" target="_blank">'
-    'Valor Bruto da Produção Agropecuária (VBP) – SEAB/PR</a><br>'
-    f'Linhas de Dados: {num_linhas}<br>Safras/Anos: {num_safras}<br>',
-    unsafe_allow_html=True
-)
 
 
-exportacao(df)
 
 st.markdown(
     "<p style='text-align: center;'>Desenvolvido por Denis Muniz Silva</p>",
