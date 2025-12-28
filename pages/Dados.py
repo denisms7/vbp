@@ -2,6 +2,14 @@ import streamlit as st
 import pandas as pd
 from app import obter_dados
 
+# Configuração da página
+st.set_page_config(
+    page_title="PMCS - VBP - SEAB",
+    page_icon="📊",
+    layout="wide",
+)
+
+
 df = obter_dados()
 
 safra = (df["Safra"].dropna().astype(str).sort_values().unique())
