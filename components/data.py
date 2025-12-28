@@ -75,7 +75,7 @@ def padronizar_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def carregar_dados() -> pd.DataFrame:
-    df_2012 = pd.read_excel("data/vbp_2012.xlsx")
+    # df_2012 = pd.read_excel("data/vbp_2012.xlsx")
     df_2013 = pd.read_excel("data/vbp_2013.xlsx")
     df_2014 = pd.read_excel("data/vbp_2014.xlsx")
 
@@ -112,18 +112,12 @@ def carregar_dados() -> pd.DataFrame:
         ignore_index=True,
     )
 
-    # =========================
+    # ===========================================================
     # TRATAMENTO DE DADOS
-    # =========================
+    # ===========================================================
 
-    # Área (ha) → float
-    df["Área (ha)"] = (
-        df["Área (ha)"]
-        .astype(str)
-        .str.replace(" ", "", regex=False)
-        .str.replace(",", ".", regex=False)
-    )
-
+    # Conversao de Tipos
+    df["Área (ha)"] = (df["Área (ha)"].astype(str).str.replace(" ", "", regex=False).str.replace(",", ".", regex=False))
     df["Área (ha)"] = pd.to_numeric(df["Área (ha)"], errors="coerce").fillna(0.0)
     df["VBP"] = pd.to_numeric(df["VBP"], errors="coerce").fillna(0.0)
     df["Produção"] = pd.to_numeric(df["Produção"], errors="coerce").fillna(0.0)
@@ -131,28 +125,20 @@ def carregar_dados() -> pd.DataFrame:
 
     # Safra → ano inicial (int)
     df['Safra'] = df['Safra'].apply(lambda x: str(x).replace('/', '').replace('-', '')).fillna(0)
-
     df["Safra_ordem"] = df["Safra"].str[:4].astype(int)
+    df["Safra"] = (df["Safra"].astype(str).str.extract(r"(\d{4})")[0].str.replace(r"(\d{2})(\d{2})", r"\1-\2", regex=True))
 
-    df["Safra"] = (
-        df["Safra"]
-        .astype(str)
-        .str.extract(r"(\d{4})")[0]
-        .str.replace(r"(\d{2})(\d{2})", r"\1-\2", regex=True)
-    )
-
-    # Remover acentos e tornar maiusculo
+    # Remover acentos, tornar maiusculo e excesso de espaços
     df["Cultura"] = df["Cultura"].str.upper()
     df["Cultura"] = df["Cultura"].apply(remover_acentos)
+    df["Cultura"] = df["Cultura"].str.strip().str.replace(r"\s+", " ", regex=True)
 
-    # Remover acentos e tornar maiusculo
+    # Remover acentos, tornar maiusculo e excesso de espaços
     df["Município"] = df["Município"].str.upper()
     df["Município"] = df["Município"].apply(remover_acentos)
+    df["Município"] = df["Município"].str.strip().str.replace(r"\s+", " ", regex=True)
 
-    # Remover excesso de espaços
-    df["Cultura"] = (df["Cultura"].str.strip().str.replace(r"\s+", " ", regex=True))
-
-    # Correcao Nomes
+    # Correcao de Nomes
     df["Município"] = df["Município"].replace("RANCHO ALEGRE DO OESTE", "RANCHO ALEGRE D'OESTE")
     df["Município"] = df["Município"].replace("SANTA CRUZ DO MONTE CASTELO", "SANTA CRUZ DE MONTE CASTELO")
     df["Município"] = df["Município"].replace("SANTA IZABEL DO IVAI", "SANTA ISABEL DO IVAI")

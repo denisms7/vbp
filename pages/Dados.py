@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from app import obter_dados
+from components.graficos import rodape
 
 # Configuração da página
 st.set_page_config(
@@ -82,12 +83,7 @@ df_cultura = pd.DataFrame(cultura, columns=["Cultura"])
 st.dataframe(df_cultura)
 
 
-
-
-
-
-
-st.markdown(
-    "<p style='text-align: center;'>Desenvolvido por Denis Muniz Silva</p>",
-    unsafe_allow_html=True,
-)
+# ===========================================================
+# RODAPE
+# ===========================================================
+rodape()
