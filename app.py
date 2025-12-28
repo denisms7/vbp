@@ -182,12 +182,16 @@ with col03:
 
 estado(df)
 
+num_linhas = len(df)
+num_safras = len(df["Safra"].unique())
+
 st.markdown(
-    '📊 Fonte dos dados: <a href="https://www.agricultura.pr.gov.br/vbp" target="_blank">'
-    'Valor Bruto da Produção Agropecuária (VBP) – SEAB/PR'
-    '</a>',
-    unsafe_allow_html=True,
+    f'Fonte dos dados: <a href="https://www.agricultura.pr.gov.br/vbp" target="_blank">'
+    'Valor Bruto da Produção Agropecuária (VBP) – SEAB/PR</a><br>'
+    f'Linhas de Dados: {num_linhas}<br>Safras/Anos: {num_safras}<br>',
+    unsafe_allow_html=True
 )
+
 
 exportacao(df)
 
