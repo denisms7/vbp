@@ -125,7 +125,6 @@ def carregar_dados() -> pd.DataFrame:
         .str.replace(r"(\d{2})(\d{2})", r"\1-\2", regex=True)
     )
 
-
     # Remover acentos e tornar maiusculo
     df["Cultura"] = df["Cultura"].str.upper()
     df["Cultura"] = df["Cultura"].apply(remover_acentos)

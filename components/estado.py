@@ -13,7 +13,8 @@ def plotly_hover_template(valor: str) -> str:
 def estado(df: pd.DataFrame):
     st.subheader("Números Estaduais", divider=True)
 
-    col10, col11 = st.columns(2)
+    col01, col02 = st.columns(2)
+    col03, col04 = st.columns(2)
 
     # Agrupamento por Safra
     vbp_por_safra = df.groupby("Safra", as_index=False)["VBP"].agg(
@@ -22,7 +23,7 @@ def estado(df: pd.DataFrame):
     )
 
     # Gráfico VBP Médio
-    with col10:
+    with col01:
         if not vbp_por_safra.empty and vbp_por_safra["vbp_medio"].notna().any():
             fig10 = px.line(
                 vbp_por_safra,
@@ -42,7 +43,7 @@ def estado(df: pd.DataFrame):
             st.info("Não há dados de VBP Médio para exibição.")
 
     # Gráfico VBP Máximo
-    with col11:
+    with col02:
         if not vbp_por_safra.empty and vbp_por_safra["vbp_maximo"].notna().any():
             fig11 = px.line(
                 vbp_por_safra,
@@ -59,9 +60,6 @@ def estado(df: pd.DataFrame):
             st.plotly_chart(fig11, use_container_width=True, key="vbp_maximo")
         else:
             st.info("Não há dados de VBP Máximo para exibição.")
-
-    # Top 5 Culturas por Área e VBP
-    col12, col13 = st.columns(2)
 
     # Agrupamento para área
     vbp_total_top_10_areas = df.groupby(
@@ -90,7 +88,7 @@ def estado(df: pd.DataFrame):
     )
 
     # Gráfico Top 5 por VBP
-    with col12:
+    with col03:
         if not top_10_por_safra_vbp.empty and top_10_por_safra_vbp["VBP"].notna().any():
             fig_vbp = px.bar(
                 top_10_por_safra_vbp.sort_values(by=["Safra_ordem"]),
@@ -110,7 +108,7 @@ def estado(df: pd.DataFrame):
             st.info("Não há dados de VBP para Top 5 Culturas.")
 
     # Gráfico Top 5 por Área
-    with col13:
+    with col04:
         if not top_10_por_safra.empty and top_10_por_safra["Área (ha)"].notna().any():
             fig_area = px.bar(
                 top_10_por_safra.sort_values(by=["Safra_ordem"]),
