@@ -39,21 +39,37 @@ st.subheader("Produção por Município", divider=True)
 
 cidade = (df["Município"].dropna().astype(str).sort_values().unique())
 cultura = (df["Cultura"].dropna().astype(str).sort_values().unique())
+safras = (df["Safra"].dropna().astype(str).sort_values().unique())
+
+safra_inicio, safra_fim = st.sidebar.select_slider(
+    "Selecione as Safras:",
+    options=safras,
+    value=(safras[0], safras[-1]),
+)
 
 
+safra_inicio = int(str(safra_inicio).replace("/", "").replace("-", ""))
+safra_fim = int(str(safra_fim).replace("/", "").replace("-", ""))
 
 
 cidade_default = encontrar_cidade_mais_proxima(cidade, "CENTENARIO DO SUL")
 cidades_selecionadas = st.sidebar.multiselect("Selecione o(s) Município(s):", options=sorted(cidade), default=cidade_default)
 
 if cidades_selecionadas:
-    df_filtrado = df[df["Município"].isin(cidades_selecionadas)]
+    df_filtrado = df[
+        df["Município"].isin(cidades_selecionadas) &
+        df["Safra_ordem"].between(safra_inicio, safra_fim)
+        ]
 else:
     df_filtrado = df.copy()
 
 geral(df_filtrado)
 
+
+
 # =======================================================================================================================================
+
+
 
 st.subheader("Produção por Cultura", divider=True)
 
@@ -61,7 +77,7 @@ cultura_selecionadas = st.sidebar.selectbox("Selecione a Cultura:", options=sort
 
 cultura_filtro = df_filtrado[df_filtrado["Cultura"] == cultura_selecionadas]
 
-cultura_total = (cultura_filtro.groupby(["Município", "Safra", "Cultura", "Unidade"], as_index=False).agg(
+cultura_total = (cultura_filtro.groupby(["Município", "Safra", "Safra_ordem", "Cultura", "Unidade"], as_index=False).agg(
     {
         "VBP": "sum",
         "Área (ha)": "sum",
@@ -101,9 +117,12 @@ col03 = st.columns(1)[0]
 
 with col01:
     if "VBP" in cultura_total.columns and (cultura_total["VBP"].fillna(0) > 0).any():
+
+        df_plot = cultura_total.sort_values("Safra_ordem")
+
         fig2 = px.bar(
-            cultura_total,
-            x="Safra",
+            df_plot,
+            x="Safra_ordem",
             y="VBP",
             color="Município",
             barmode="group",
@@ -119,6 +138,11 @@ with col01:
             )
         )
 
+        fig2.update_layout(
+            xaxis_title="Safra",
+            yaxis_title="VBP",
+        )
+
         st.plotly_chart(fig2, use_container_width=True)
     else:
         st.info("Não há dados de VBP para exibição.")
@@ -130,14 +154,16 @@ with col02:
         colunas_prioridade,
     )
 
+    df_plot = cultura_total.sort_values("Safra_ordem")
+
     if coluna_y is not None:
-        fig = px.line(
-            cultura_total,
-            x="Safra",
+        fig = px.bar(
+            df_plot,
+            x="Safra_ordem",
             y=coluna_y,
             color="Município",
+            barmode="group",
             title=f"{coluna_y} - {cultura_selecionadas}",
-            markers=True,
             custom_data=["Município"],
         )
 
@@ -149,6 +175,11 @@ with col02:
             )
         )
 
+        fig.update_layout(
+            xaxis_title="Safra",
+            yaxis_title=f"{coluna_y}",
+        )
+
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Não há dados disponíveis para exibição.")
@@ -158,14 +189,21 @@ with col03:
     # Verifica se existe algum valor não nulo e maior que zero em Produção
     if "Produção" in cultura_total.columns and (cultura_total["Produção"].fillna(0) > 0).any():
 
+        df_plot = cultura_total.sort_values("Safra_ordem")
+
         fig3 = px.area(
-            cultura_total.sort_values("Safra"),
+            df_plot,
             x="Safra",
             y="Produção",
             color="Município",
             markers=True,
             title=f"Produção - {cultura_selecionadas}",
             custom_data=["Município", "Unidade"],
+        )
+
+        fig3.update_xaxes(
+            categoryorder="array",
+            categoryarray=df_plot["Safra"],
         )
 
         fig3.update_traces(
@@ -187,16 +225,11 @@ with col03:
         st.plotly_chart(
             fig3,
             use_container_width=True,
-            key=f"grafico_area_producao_{cultura_selecionadas}"
+            key=f"grafico_area_producao_{cultura_selecionadas}",
         )
 
-    else:
-        st.info("Não há dados de Produção para exibição.")
 
-estado(df)
-
-
-
+estado(df[df["Safra_ordem"].between(safra_inicio, safra_fim)])
 
 st.markdown(
     "<p style='text-align: center;'>Desenvolvido por Denis Muniz Silva</p>",
