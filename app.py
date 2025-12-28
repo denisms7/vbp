@@ -23,11 +23,11 @@ def obter_dados():
 df = obter_dados()
 
 
-st.title("VBP Valor Bruto da Produção")
+st.title("Valor Bruto da Produção")
 
 st.markdown(
     """
-    O **Valor Bruto da Produção** é um índice de frequência anual, calculado com base na produção agrícola municipal e nos preços recebidos pelos produtores paranaenses. Engloba produtos da agricultura, da pecuária, da silvicultura, do extrativismo vegetal, da olericultura, da fruticultura, de plantas aromáticas, medicinais e ornamentais, da pesca etc.
+    O **Valor Bruto da Produção (VBP)** é um índice de frequência anual, calculado com base na produção agrícola municipal e nos preços recebidos pelos produtores paranaenses. Engloba produtos da agricultura, da pecuária, da silvicultura, do extrativismo vegetal, da olericultura, da fruticultura, de plantas aromáticas, medicinais e ornamentais, da pesca etc.
 
     Além de fornecer dados sobre a produção agropecuária de todos os Municípios do estado do Paraná, tal índice compõe o **Fundo de Participação dos Municípios**. O Valor Bruto da Produção tem uma participação de 8% no cálculo usado para a determinação do índice final a ser aplicado sobre a arrecadação do ICMS, que resulta na cota-parte devida a cada Município.
     """
