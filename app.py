@@ -30,7 +30,7 @@ st.title("VBP Valor Bruto da Produção")
 cidade = (df["Município"].dropna().astype(str).sort_values().unique())
 cultura = (df["Cultura"].dropna().astype(str).sort_values().unique())
 
-cidade_default = encontrar_cidade_mais_proxima(cidade, "centenario do sul")
+cidade_default = encontrar_cidade_mais_proxima(cidade, "CENTENARIO DO SUL")
 cidades_selecionadas = st.multiselect("Selecione o(s) Município(s):", options=sorted(cidade), default=cidade_default)
 
 if cidades_selecionadas:

@@ -75,6 +75,11 @@ def padronizar_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def carregar_dados() -> pd.DataFrame:
+    df_2015 = pd.read_excel("data/vbp_2015.xlsx")
+    df_2016 = pd.read_excel("data/vbp_2016.xlsx")
+    df_2017 = pd.read_excel("data/vbp_2017.xlsx")
+    df_2018 = pd.read_excel("data/vbp_2018.xlsx")
+
     df_2019 = pd.read_excel("data/vbp_2019.xlsx")
     df_2020 = pd.read_excel("data/vbp_2020.xlsx")
     df_2021 = pd.read_excel("data/vbp_2021.xlsx")
@@ -83,6 +88,10 @@ def carregar_dados() -> pd.DataFrame:
     df_2024 = pd.read_excel("data/vbp_2024.xlsx")
 
     dfs = [
+        df_2015,
+        df_2016,
+        df_2017,
+        df_2018,
         df_2019,
         df_2020,
         df_2021,
@@ -130,7 +139,7 @@ def carregar_dados() -> pd.DataFrame:
     df["Cultura"] = df["Cultura"].apply(remover_acentos)
 
     # Remover acentos e tornar maiusculo
-    # df["Município"] = df["Município"].str.upper()
+    df["Município"] = df["Município"].str.upper()
     df["Município"] = df["Município"].apply(remover_acentos)
 
     # Remover excesso de espaços
