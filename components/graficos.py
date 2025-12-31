@@ -251,6 +251,7 @@ def estado(df: pd.DataFrame):
     # Agrupamento por Safra
     vbp_por_safra = df.groupby("Safra", as_index=False)["VBP"].agg(
         vbp_medio="mean",
+        vbp_mediana="median",
         vbp_maximo="max",
     )
 
@@ -260,17 +261,29 @@ def estado(df: pd.DataFrame):
             fig10 = px.line(
                 vbp_por_safra,
                 x="Safra",
-                y="vbp_medio",
+                y=["vbp_medio", "vbp_mediana"],
                 markers=True,
-                title="VBP Médio por Safra",
+                title="VBP Médio e Mediana por Safra",
             )
 
+            # Hover do VBP Médio
             fig10.update_traces(
                 hovertemplate=(
-                    "<b>VBP Médio</b><br>"
-                    "Valor: R$ %{{y:,.2f}}<br>"
+                    "<b>VBP Média</b><br>"
+                    "Valor: R$ %{y:,.2f}<br>"
                     "<extra></extra>"
-                )
+                ),
+                selector=dict(name="vbp_medio"),
+            )
+
+            # Hover da Mediana
+            fig10.update_traces(
+                hovertemplate=(
+                    "<b>VBP Mediana</b><br>"
+                    "Valor: R$ %{y:,.2f}<br>"
+                    "<extra></extra>"
+                ),
+                selector=dict(name="vbp_mediana"),
             )
 
             fig10.update_layout(
@@ -278,6 +291,14 @@ def estado(df: pd.DataFrame):
                 hovermode="x unified",
                 legend_title_text="Indicadores",
             )
+
+            # Renomeia a legenda
+            fig10.for_each_trace(
+                lambda trace: trace.update(
+                    name="Média" if trace.name == "vbp_medio" else "Mediana"
+                )
+            )
+
             st.plotly_chart(fig10, use_container_width=True, key="vbp_medio")
         else:
             st.info("Não há dados de VBP Médio para exibição.")
@@ -296,7 +317,7 @@ def estado(df: pd.DataFrame):
             fig11.update_traces(
                 hovertemplate=(
                     "<b>VBP Máximo</b><br>"
-                    "Valor: R$ %{{y:,.2f}}<br>"
+                    "Valor: R$ %{y:,.2f}<br>"
                     "<extra></extra>"
                 )
             )
