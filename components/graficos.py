@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 
 def coluna_com_dados(df, colunas):
@@ -253,55 +254,73 @@ def estado(df: pd.DataFrame):
         vbp_medio="mean",
         vbp_mediana="median",
         vbp_maximo="max",
+        vbp_desvio_padrao="std",
+    )
+
+    vbp_por_safra["coef_variacao"] = (
+        vbp_por_safra["vbp_desvio_padrao"] / vbp_por_safra["vbp_medio"]
     )
 
     # Gráfico VBP Médio
     with col01:
         if not vbp_por_safra.empty and vbp_por_safra["vbp_medio"].notna().any():
-            fig10 = px.line(
-                vbp_por_safra,
-                x="Safra",
-                y=["vbp_medio", "vbp_mediana"],
-                markers=True,
-                title="VBP Médio e Mediana por Safra",
+            fig10 = go.Figure()
+
+            # VBP Médio
+            fig10.add_trace(
+                go.Scatter(
+                    x=vbp_por_safra["Safra"],
+                    y=vbp_por_safra["vbp_medio"],
+                    mode="lines+markers",
+                    name="Média",
+                    hovertemplate="Média<br>R$ %{y:,.2f}<extra></extra>",
+                )
             )
 
-            # Hover do VBP Médio
-            fig10.update_traces(
-                hovertemplate=(
-                    "<b>VBP Média</b><br>"
-                    "Valor: R$ %{y:,.2f}<br>"
-                    "<extra></extra>"
-                ),
-                selector=dict(name="vbp_medio"),
+            # VBP Mediana
+            fig10.add_trace(
+                go.Scatter(
+                    x=vbp_por_safra["Safra"],
+                    y=vbp_por_safra["vbp_mediana"],
+                    mode="lines+markers",
+                    name="Mediana",
+                    hovertemplate="Mediana<br>R$ %{y:,.2f}<extra></extra>",
+                )
             )
 
-            # Hover da Mediana
-            fig10.update_traces(
-                hovertemplate=(
-                    "<b>VBP Mediana</b><br>"
-                    "Valor: R$ %{y:,.2f}<br>"
-                    "<extra></extra>"
-                ),
-                selector=dict(name="vbp_mediana"),
+            # Coeficiente de Variação (eixo secundário)
+            fig10.add_trace(
+                go.Scatter(
+                    x=vbp_por_safra["Safra"],
+                    y=vbp_por_safra["coef_variacao"] * 100,
+                    mode="lines+markers",
+                    name="Coef. Variação (%)",
+                    yaxis="y2",
+                    hovertemplate="Coef. Variação<br>%{y:.2f}%<extra></extra>",
+                )
             )
 
             fig10.update_layout(
-                yaxis_title="VBP (R$)",
-                hovermode="x unified",
+                title="VBP Médio, Mediana e Coeficiente de Variação por Safra",
+                xaxis_title="Safra",
+                yaxis=dict(
+                    title="VBP (R$)",
+                    tickprefix="R$ ",
+                ),
+                yaxis2=dict(
+                    title="Variação (%)",
+                    overlaying="y",
+                    side="right",
+                ),
                 legend_title_text="Indicadores",
-            )
-
-            # Renomeia a legenda
-            fig10.for_each_trace(
-                lambda trace: trace.update(
-                    name="Média" if trace.name == "vbp_medio" else "Mediana"
-                )
+                hovermode="x unified",
             )
 
             st.plotly_chart(fig10, use_container_width=True, key="vbp_medio")
         else:
             st.info("Não há dados de VBP Médio para exibição.")
+
+
 
     # Gráfico VBP Máximo
     with col02:
@@ -395,6 +414,98 @@ def estado(df: pd.DataFrame):
             st.plotly_chart(fig_area, use_container_width=True, key="top5_area")
         else:
             st.info("Não há dados de Área para Top 5 Culturas.")
+
+
+    st.subheader("📊 Indicadores Estatísticos do VBP Estadual")
+
+    col1, col2 = st.columns(2)
+    col3, col4 = st.columns(2)
+
+    # =========================
+    # MÉDIA
+    # =========================
+    with col1:
+        st.markdown("### 🔹 Média")
+        st.markdown(
+            "Representa o valor médio do VBP em uma safra."
+        )
+        st.latex(
+            r"\text{Média} = \frac{\sum_{i=1}^{n} VBP_i}{n}"
+        )
+        st.markdown(
+            "📌 Sensível a valores extremos (*outliers*)."
+        )
+
+    # =========================
+    # MEDIANA
+    # =========================
+    with col2:
+        st.markdown("### 🔹 Mediana")
+        st.markdown(
+            "Valor central da distribuição do VBP."
+        )
+
+        st.markdown("Se $n$ é ímpar:")
+        st.latex(
+            r"\text{Mediana} = VBP_{\frac{n+1}{2}}"
+        )
+
+        st.markdown("Se $n$ é par:")
+        st.latex(
+            r"\text{Mediana} = \frac{VBP_{\frac{n}{2}} + VBP_{\frac{n}{2}+1}}{2}"
+        )
+
+        st.markdown(
+            "📌 Não é afetada por *outliers*."
+        )
+
+    # =========================
+    # DESVIO PADRÃO
+    # =========================
+    with col3:
+        st.markdown("### 🔹 Desvio Padrão ($\sigma$)")
+        st.markdown(
+            "Mede a dispersão dos valores em relação à média."
+        )
+        st.latex(
+            r"\sigma = \sqrt{\frac{\sum_{i=1}^{n} (VBP_i - \bar{x})^2}{n - 1}}"
+        )
+        st.markdown(
+            "📌 Quanto maior, maior a variabilidade."
+        )
+
+    # =========================
+    # COEF. VARIAÇÃO
+    # =========================
+    with col4:
+        st.markdown("### 🔹 Coeficiente de Variação (CV)")
+        st.markdown(
+            "Mede a variabilidade **relativa** dos dados."
+        )
+        st.latex(
+            r"CV = \frac{\sigma}{\bar{x}} \times 100"
+        )
+        st.markdown(
+            """
+            📌 Interpretação:
+            - CV < 20% → baixa variabilidade  
+            - 20% ≤ CV < 100% → moderada  
+            - CV ≥ 100% → alta variabilidade
+            """
+        )
+
+    st.markdown("---")
+
+    st.info(
+        """
+        **Interpretação Geral**
+
+        - Média muito maior que a mediana indica **assimetria à direita**
+        - CV elevado indica **alta dispersão** e presença de valores extremos
+        - Comum em dados econômicos e produtivos
+        """
+    )
+
 
 
 def rodape():
