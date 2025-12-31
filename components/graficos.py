@@ -416,7 +416,7 @@ def estado(df: pd.DataFrame):
             st.info("Não há dados de Área para Top 5 Culturas.")
 
 
-    st.subheader("📊 Indicadores Estatísticos do VBP Estadual")
+def indicadores():
 
     col1, col2 = st.columns(2)
     col3, col4 = st.columns(2)

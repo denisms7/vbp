@@ -1,6 +1,6 @@
 import streamlit as st
 from components.data import carregar_dados, encontrar_cidade_mais_proxima
-from components.graficos import geral, estado, rodape, cultura
+from components.graficos import geral, estado, rodape, cultura, indicadores
 
 
 # ===========================================================
@@ -143,6 +143,13 @@ cultura(cultura_total, cultura_selecionadas)
 st.subheader("Números Estaduais", divider=True)
 estado(df[df["Safra_ordem"].between(safra_inicio, safra_fim)])
 
+
+
+# ===========================================================
+# Indicadores
+# ===========================================================
+st.subheader("Indicadores Estatísticos do VBP Estadual", divider=True)
+indicadores()
 
 # ===========================================================
 # RODAPE
