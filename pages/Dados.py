@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from Dashboard import obter_dados
+from pages.Dashboard import obter_dados
 from components.graficos import rodape
 
 # Configuração da página
