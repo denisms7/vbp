@@ -60,7 +60,9 @@ if cidades_selecionadas:
     df_filtrado = df[df["Município"].isin(cidades_selecionadas) & df["Safra_ordem"].between(safra_inicio, safra_fim)]
 
 else:
-    df_filtrado = df.copy()
+    st.warning("⚠️ Selecione um ou mais Municípios.")
+    st.stop()
+
 
 geral(df_filtrado)
 
