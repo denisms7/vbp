@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from pages.Dashboard import obter_dados
+from components.data import load_data_vbp
 from components.graficos import rodape
 
 # Configuração da página
@@ -10,8 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-
-df = obter_dados()
+df = load_data_vbp()
 
 safra = (df["Safra"].dropna().astype(str).sort_values().unique())
 cultura = (df["Cultura"].dropna().astype(str).sort_values().unique())

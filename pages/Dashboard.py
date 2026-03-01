@@ -1,7 +1,6 @@
 import streamlit as st
-from components.data import carregar_dados, encontrar_cidade_mais_proxima
+from components.data import load_data_vbp, encontrar_cidade_mais_proxima
 from components.graficos import geral, estado, rodape, cultura, indicadores
-
 
 # ===========================================================
 # Configuração da página
@@ -16,13 +15,8 @@ st.set_page_config(
 # ===========================================================
 # Salvar Cache dos dados
 # ===========================================================
-@st.cache_data(show_spinner="Carregando dados...")
-def obter_dados():
-    return carregar_dados()
+df = load_data_vbp()
 
-
-# Carregar dados
-df = obter_dados()
 
 cidade = (df["Município"].dropna().astype(str).sort_values().unique())
 culturas = (df["Cultura"].dropna().astype(str).sort_values().unique())

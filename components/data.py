@@ -1,6 +1,7 @@
 import pandas as pd
 import unicodedata
 from difflib import get_close_matches
+import streamlit as st
 
 
 def remover_acentos(texto):
@@ -154,4 +155,10 @@ def carregar_dados() -> pd.DataFrame:
 
     df = df.drop(columns=["NR", "NR Seab"])
 
+    return df
+
+
+@st.cache_data(show_spinner="Carregando dados...")
+def load_data_vbp():
+    df = carregar_dados()
     return df
