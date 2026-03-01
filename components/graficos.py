@@ -66,7 +66,7 @@ def geral(df: pd.DataFrame):
                 "VBP: %{y:,.2f}<extra></extra>"
             )
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
     with col02:
         fig = px.line(
@@ -96,7 +96,7 @@ def geral(df: pd.DataFrame):
             legend_title_text="Município",
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
     with col03:
         fig = px.line(
@@ -125,7 +125,7 @@ def geral(df: pd.DataFrame):
             legend_title_text="Município",
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
 
 def cultura(cultura_total: pd.DataFrame, cultura_selecionadas):
@@ -160,7 +160,7 @@ def cultura(cultura_total: pd.DataFrame, cultura_selecionadas):
                 yaxis_title="VBP",
             )
 
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig2, width='stretch')
         else:
             st.info("Não há dados de VBP para exibição.")
 
@@ -196,7 +196,7 @@ def cultura(cultura_total: pd.DataFrame, cultura_selecionadas):
                 yaxis_title=f"{coluna_y}",
             )
 
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         else:
             st.info("Não há dados disponíveis para exibição.")
 
@@ -239,7 +239,7 @@ def cultura(cultura_total: pd.DataFrame, cultura_selecionadas):
 
             st.plotly_chart(
                 fig3,
-                use_container_width=True,
+                width='stretch',
                 key=f"grafico_area_producao_{cultura_selecionadas}",
             )
 
@@ -316,7 +316,7 @@ def estado(df: pd.DataFrame):
                 hovermode="x unified",
             )
 
-            st.plotly_chart(fig10, use_container_width=True, key="vbp_medio")
+            st.plotly_chart(fig10, width='stretch', key="vbp_medio")
         else:
             st.info("Não há dados de VBP Médio para exibição.")
 
@@ -345,7 +345,7 @@ def estado(df: pd.DataFrame):
                 yaxis_title="VBP Máximo (R$)",
                 hovermode="x unified",
             )
-            st.plotly_chart(fig11, use_container_width=True, key="vbp_maximo")
+            st.plotly_chart(fig11, width='stretch', key="vbp_maximo")
         else:
             st.info("Não há dados de VBP Máximo para exibição.")
 
@@ -391,7 +391,7 @@ def estado(df: pd.DataFrame):
                 yaxis_title="VBP",
                 legend_title_text="Cultura",
             )
-            st.plotly_chart(fig_vbp, use_container_width=True, key="top5_vbp")
+            st.plotly_chart(fig_vbp, width='stretch', key="top5_vbp")
         else:
             st.info("Não há dados de VBP para Top 5 Culturas.")
 
@@ -411,7 +411,7 @@ def estado(df: pd.DataFrame):
                 yaxis_title="Área (ha)",
                 legend_title_text="Cultura",
             )
-            st.plotly_chart(fig_area, use_container_width=True, key="top5_area")
+            st.plotly_chart(fig_area, width='stretch', key="top5_area")
         else:
             st.info("Não há dados de Área para Top 5 Culturas.")
 
