@@ -72,14 +72,17 @@ codigo = """
 st.code(codigo, language="python")
 
 
-st.subheader("Municípios", divider=True)
-df_municipio = pd.DataFrame(municipio, columns=["Município"])
-st.dataframe(df_municipio)
+cold1, cold2 = st.columns(2)
 
+with cold1:
+    st.subheader("Municípios", divider=True)
+    df_municipio = pd.DataFrame(municipio, columns=["Município"])
+    st.dataframe(df_municipio)
 
-st.subheader("Culturas", divider=True)
-df_cultura = pd.DataFrame(cultura, columns=["Cultura"])
-st.dataframe(df_cultura)
+with cold2:
+    st.subheader("Culturas", divider=True)
+    df_cultura = pd.DataFrame(cultura, columns=["Cultura"])
+    st.dataframe(df_cultura)
 
 
 # ===========================================================
