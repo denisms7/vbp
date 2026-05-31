@@ -320,8 +320,6 @@ def estado(df: pd.DataFrame):
         else:
             st.info("Não há dados de VBP Médio para exibição.")
 
-
-
     # Gráfico VBP Máximo
     with col02:
         if not vbp_por_safra.empty and vbp_por_safra["vbp_maximo"].notna().any():
@@ -480,7 +478,7 @@ def indicadores(df: pd.DataFrame):
     # DESVIO PADRÃO
     # =========================
     with col3:
-        st.markdown("### 🔹 Desvio Padrão ($\sigma$)")
+        st.markdown(r"### 🔹 Desvio Padrão ($\sigma$)")
         st.markdown(
             "Mede a dispersão dos valores em relação à média."
         )
