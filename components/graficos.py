@@ -416,7 +416,24 @@ def estado(df: pd.DataFrame):
             st.info("Não há dados de Área para Top 5 Culturas.")
 
 
-def indicadores():
+def indicadores(df: pd.DataFrame):
+
+    # Calcula estatísticas reais com base no df filtrado
+    vbp = df["VBP"]
+    media = vbp.mean()
+    mediana = vbp.median()
+    desvio = vbp.std()
+    cv = (desvio / media * 100) if media and media != 0 else float("nan")
+
+    # Métricas calculadas
+    st.markdown("#### Estatísticas do VBP (filtro atual)")
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Média", f"R$ {media:,.2f}")
+    m2.metric("Mediana", f"R$ {mediana:,.2f}")
+    m3.metric("Desvio Padrão", f"R$ {desvio:,.2f}")
+    m4.metric("Coef. Variação", f"{cv:.1f}%")
+
+    st.markdown("---")
 
     col1, col2 = st.columns(2)
     col3, col4 = st.columns(2)
@@ -486,26 +503,37 @@ def indicadores():
             r"CV = \frac{\sigma}{\bar{x}} \times 100"
         )
         st.markdown(
-            """
-            📌 Interpretação:
-            - CV < 20% → baixa variabilidade  
-            - 20% ≤ CV < 100% → moderada  
-            - CV ≥ 100% → alta variabilidade
-            """
+            "- CV < 20% → baixa variabilidade  \n"
+            "- 20% a 100% → variabilidade moderada  \n"
+            "- CV >= 100% → alta variabilidade"
         )
 
     st.markdown("---")
 
-    st.info(
-        """
-        **Interpretação Geral**
+    # Interpretação automática baseada nos valores reais
+    if not pd.isna(cv):
+        if cv < 20:
+            cv_texto = "baixa variabilidade"
+        elif cv < 100:
+            cv_texto = "variabilidade moderada"
+        else:
+            cv_texto = "alta variabilidade"
 
-        - Média muito maior que a mediana indica **assimetria à direita**
-        - CV elevado indica **alta dispersão** e presença de valores extremos
-        - Comum em dados econômicos e produtivos
-        """
-    )
+        if media > mediana * 1.1:
+            assimetria = "assimetria à direita"
+            comparacao = "muito maior"
+        else:
+            assimetria = "distribuição relativamente simétrica"
+            comparacao = "próxima"
 
+        st.info(
+            f"**Interpretação dos dados atuais:** "
+            f"Média (R$ {media:,.2f}) {comparacao} "
+            f"da mediana (R$ {mediana:,.2f}) → {assimetria}. "
+            f"CV de {cv:.1f}% indica {cv_texto}."
+        )
+    else:
+        st.info("Dados insuficientes para calcular os indicadores.")
 
 
 def rodape():

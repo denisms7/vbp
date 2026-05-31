@@ -125,9 +125,11 @@ def carregar_dados() -> pd.DataFrame:
     df["Abate / Comercialização"] = pd.to_numeric(df["Abate / Comercialização"], errors="coerce").fillna(0.0)
 
     # Safra → ano inicial (int)
-    df['Safra'] = df['Safra'].apply(lambda x: str(x).replace('/', '').replace('-', '')).fillna(0)
+    df['Safra'] = df['Safra'].apply(
+        lambda x: str(x).replace('/', '').replace('-', '') if pd.notna(x) else "0"
+    )
     df["Safra_ordem"] = df["Safra"].str[:4].astype(int)
-    df["Safra"] = (df["Safra"].astype(str).str.extract(r"(\d{4})")[0].str.replace(r"(\d{2})(\d{2})", r"\1-\2", regex=True))
+    df["Safra"] = df["Safra"].astype(str).str.extract(r"(\d{4})")[0]
 
     # Remover acentos, tornar maiusculo e excesso de espaços
     df["Cultura"] = df["Cultura"].str.upper()
@@ -158,7 +160,27 @@ def carregar_dados() -> pd.DataFrame:
     return df
 
 
+PARQUET_PATH = "data/vbp_cache.parquet"
+
+
 @st.cache_data(show_spinner="Carregando dados...")
 def load_data_vbp():
+    import os
+    import glob
+
+    # Lista todos os xlsx para detectar mudanças
+    xlsx_files = sorted(glob.glob("data/vbp_*.xlsx"))
+    xlsx_mtime = max(os.path.getmtime(f) for f in xlsx_files) if xlsx_files else 0
+
+    parquet_mtime = (
+        os.path.getmtime(PARQUET_PATH)
+        if os.path.exists(PARQUET_PATH)
+        else -1
+    )
+
+    if parquet_mtime >= xlsx_mtime:
+        return pd.read_parquet(PARQUET_PATH)
+
     df = carregar_dados()
+    df.to_parquet(PARQUET_PATH, index=False)
     return df

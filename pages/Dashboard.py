@@ -50,6 +50,13 @@ safra_fim = int(str(safra_fim).replace("/", "").replace("-", ""))
 cidade_default = encontrar_cidade_mais_proxima(cidade, "CENTENARIO DO SUL")
 cidades_selecionadas = st.sidebar.multiselect("Selecione o(s) Município(s):", options=sorted(cidade), default=cidade_default)
 
+# Métricas do intervalo selecionado
+df_intervalo = df[df["Safra_ordem"].between(safra_inicio, safra_fim)]
+col_m1, col_m2, col_m3 = st.sidebar.columns(3)
+col_m1.metric("Municípios", df_intervalo["Município"].nunique())
+col_m2.metric("Culturas", df_intervalo["Cultura"].nunique())
+col_m3.metric("Safras", df_intervalo["Safra"].nunique())
+
 if cidades_selecionadas:
     df_filtrado = df[df["Município"].isin(cidades_selecionadas) & df["Safra_ordem"].between(safra_inicio, safra_fim)]
 
@@ -137,6 +144,10 @@ cultura(cultura_total, cultura_selecionadas)
 # ESTADO
 # ===========================================================
 st.subheader("Números Estaduais", divider=True)
+st.info(
+    "📌 Esta seção exibe dados do **estado do Paraná inteiro**, "
+    "independente dos municípios selecionados acima."
+)
 estado(df[df["Safra_ordem"].between(safra_inicio, safra_fim)])
 
 
@@ -144,8 +155,8 @@ estado(df[df["Safra_ordem"].between(safra_inicio, safra_fim)])
 # ===========================================================
 # Indicadores
 # ===========================================================
-st.subheader("Indicadores Estatísticos do VBP Estadual", divider=True)
-indicadores()
+st.subheader("Indicadores Estatísticos do VBP", divider=True)
+indicadores(df_filtrado)
 
 # ===========================================================
 # RODAPE
