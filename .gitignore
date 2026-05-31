@@ -1,4 +1,5 @@
 vbp_cache.parquet
+data\vbp_cache.parquet
 
 .devcontainer
 devcontainer/
